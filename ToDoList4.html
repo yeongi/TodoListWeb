@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>TODO-LIST</title>
+	<style>
+		.input {
+			text-align: center;
+			margin-top: 10px;
+			height: 50px;
+			background-color: skyblue;
+		}
+		.section {
+			height: 25px;
+			width: 500px;
+			margin: 10px;
+			display: inline-flex;
+			flex-wrap: wrap;
+			flex-direction: column;
+			text-align: center;
+		}
+		.list {
+			margin: 7px;
+			margin-left: 10px;
+			padding: 5px;
+			height: 25px;
+			float: left;
+			width: 500px;
+			text-align: center;
+		}
+		.checkBox {
+			float: left;
+			margin-top: 9px;
+			margin-right: 5px;
+			width: 30px;
+			height: 30px;
+			border: 2px solid skyblue;
+			cursor: pointer;
+		}
+		.removeBTN {
+			margin: 7px;
+			padding: 5px;
+			height: 40px;
+			width: 50px;
+			float: left;
+			background-color: white;
+		}
+		.didText {
+			float: left;
+			width: 350px;
+			font-size: 15px;
+			font-style: Arial;
+			color :red;
+			border:2px solid black ;
+			background-color: white;
+			text-decoration: line-through;
+		}
+		.doText {
+			float: left;
+			width: 350px;
+			font-size: 18px;
+			border:2px solid black ;
+			background-color: white;
+			font-weight: bold;
+		}
+
+	</style>
+	<script>
+		window.onload = function () {
+			var inputDo = document.getElementById('inputDo');
+			var inpBtn = document.getElementById('IB');
+			var doList = document.getElementById('List');
+			var allDelete = document.getElementById('AllDel');
+			var checkedDelete = document.getElementById('CheckedDel');
+			
+
+			checkedDelete.addEventListener("click",(e) => {
+				alert("체크된 일만 삭제 합니다.");
+				let i = 0;
+				let RMBTNS = document.getElementsByClassName('removeBTN');
+				let checked = document.getElementsByClassName('checkBox');
+				
+				while(i<checked.length) {
+					if(checked[i].checked){
+						RMBTNS[i].click();
+						if(i>0){
+							i--;
+						}			
+						continue;	
+					}
+					i++;
+				}
+			},false);
+
+			allDelete.addEventListener("click",(e) => {
+				alert("주의! 모든 할 일이 삭제 됩니다.");
+				let i = 0;
+				let RMBTNS = document.getElementsByClassName('removeBTN');
+				
+				while(RMBTNS.length > 0) {
+					RMBTNS[i].click();
+				}
+			},false);
+			
+
+			inpBtn.addEventListener("click",(event)=>{
+
+				//공백인지 아닌지 검사
+				if(inputDo.value == ''||inpBtn.value == null ){
+					alert("할 일을 넣으세요");
+					return false;
+				}
+				createNode(doList);
+			
+			},false);
+
+
+
+			createNode = (parents) => {
+				//빈 체크 박스 생성
+				let check = document.createElement("input");
+				//빈 리스트 생성
+				let doL = document.createElement("input");
+				//버튼 생성
+				let removeBtns = document.createElement("button");
+
+				//체크박스 속성 설정
+				check.type = 'checkbox';
+				check.name = 'finished';
+				check.className = 'checkBox';
+
+				//리스트 속성 설정
+				doL.readOnly = true;
+				doL.type = "text";
+				doL.className = 'list doText';
+				doL.value = inputDo.value;
+				inputDo.value = '';
+
+				//버튼 속성 설정
+				removeBtns.id = "removeBtns"+status;
+				removeBtns.innerHTML = "삭제";
+				removeBtns.className = "removeBTN";
+
+				parents.appendChild(check);
+				parents.appendChild(doL);
+				parents.appendChild(removeBtns);
+
+				//수정
+				doL.addEventListener("dblclick",(e) =>{
+					if(e.target.readOnly == true){
+						e.target.readOnly = false;
+					}else{
+						e.target.readOnly = true;
+					}
+				});
+
+				check.addEventListener("click", (e) =>{
+					if(e.target.checked){
+						//형제 노드
+						e.target.nextSibling.className = 'list didText';
+					}else{
+						e.target.nextSibling.className = 'list doText';
+					}
+					
+				},false);
+
+				removeBtns.addEventListener("click",(e)=>{
+					remove(e.target);
+				},false);
+			}
+
+			remove = (node) =>{
+				doList.removeChild(node.previousSibling.previousSibling)
+				doList.removeChild(node.previousSibling)
+				doList.removeChild(node);
+			};
+
+
+		};
+
+	</script>
+</head>
+<body>
+	<h1 style="text-align: center;">할일 목록</h1>
+	<div style="text-align: center;">
+		<div class="input">
+			<input type="text" id="inputDo" style="height: 20px;width: 400px">
+			<input type="button" value="입력" id="IB">
+			<input type="button" id="CheckedDel" value="부분 삭제">
+			<input type="button" id="AllDel" value="전체 삭제">
+		</div>
+		<div class="section">
+			<div id="List" >
+				<h2>To-Do-List</h2>
+				<div style="height: 20px">할 일</div>
+			</div>
+		</div>
+	</div>
+	
+
+</body>
+</html>
